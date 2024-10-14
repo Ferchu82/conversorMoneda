@@ -122,24 +122,20 @@ public class ConversorMoneda {
     }
 
     private static double convertirMoneda(String origen, String destino, double valor) {
-        // Asegúrate de que las tasas se actualicen solo si es necesario.
         if (!tasasDeCambio.containsKey(destino)) {
             actualizarTasasDeCambio(origen);
         }
 
-        // Obtenemos la tasa de cambio
         Double tasaOrigen = tasasDeCambio.get(origen);
         Double tasaDestino = tasasDeCambio.get(destino);
 
-        // Debug: imprime las tasas obtenidas
         System.out.println("Tasa de cambio de " + origen + " a " + destino + ": " + tasaDestino);
 
         if (tasaOrigen == null || tasaDestino == null) {
             System.out.println("No se pudo obtener la tasa de cambio para " + origen + " o " + destino);
-            return valor; // O un valor predeterminado que tenga sentido
+            return valor;
         }
 
-        // Convertir el valor
         return valor * (tasaDestino / tasaOrigen);
     }
 
@@ -154,13 +150,12 @@ public class ConversorMoneda {
             Gson gson = new Gson();
             ApiResponse response = gson.fromJson(new InputStreamReader(request.getInputStream()), ApiResponse.class);
 
-            // Imprimir la respuesta para depuración
             System.out.println("Respuesta de la API: " + response.result);
             System.out.println("Tasas de cambio: " + response.conversion_rates);
 
             if (response.result.equals("success")) {
                 tasasDeCambio = response.conversion_rates;
-                System.out.println("Tasas de cambio actualizadas: " + tasasDeCambio); // Salida de depuración
+                System.out.println("Tasas de cambio actualizadas: " + tasasDeCambio);
             } else {
                 System.out.println("Error al obtener las tasas de cambio: " + response.error_type);
             }
